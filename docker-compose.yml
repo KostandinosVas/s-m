@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: supermarket-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: supermarket
+      POSTGRES_PASSWORD: supermarket
+      POSTGRES_DB: supermarket
+    ports:
+      - "5433:5432"
+    volumes:
+      - supermarket-data:/var/lib/postgresql/data
+
+volumes:
+  supermarket-data:
