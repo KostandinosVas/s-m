@@ -1,34 +1,36 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "target": "ES2017",                    // JS version to compile down to
+    "lib": ["dom", "dom.iterable", "esnext"], // available built-in type definitions
+    "allowJs": true,                       // allow .js files in the project
+    "skipLibCheck": true,                  // don't type-check node_modules; faster builds
+    "strict": true,                        // master switch for all strict checks
+    "noUncheckedIndexedAccess": true,      // arr[0] is T | undefined, not T
+    "noImplicitOverride": true,            // overriding a method requires `override`
+    "noUnusedLocals": true,                // error on unused variables
+    "noUnusedParameters": true,            // error on unused params (prefix _ to allow)
+    "exactOptionalPropertyTypes": true,    // "key missing" ≠ "key set to undefined"
+    "verbatimModuleSyntax": true,          // type-only imports must say `import type`
+    "noEmit": true,                        // TS only checks; Next/SWC does the compiling
+    "esModuleInterop": true,               // default-import CommonJS packages cleanly
+    "module": "esnext",                    // emit ES modules, not CommonJS
+    "moduleResolution": "bundler",         // resolve imports like a modern bundler
+    "resolveJsonModule": true,             // allow importing .json files
+    "isolatedModules": true,               // every file must compile standalone
+    "jsx": "react-jsx",                    // no `import React` needed in JSX files
+    "incremental": true,                   // cache type info between runs
+    "plugins": [{ "name": "next" }],       // Next's editor plugin (RSC warnings, etc.)
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"]                   // "@/modules/cart" → "./src/modules/cart"
     }
   },
   "include": [
-    "next-env.d.ts",
+    "next-env.d.ts",                       // Next's ambient types; auto-generated, don't edit
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
+    ".next/types/**/*.ts",                 // generated route types (typed links/params)
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"]              // never type-check dependencies
 }
