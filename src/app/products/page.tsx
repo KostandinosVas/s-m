@@ -10,7 +10,7 @@ export default async function ProductsPage() {
 
       <ul className="space-y-3">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+         <ProductCard key={product.slug} product={product} />
         ))}
       </ul>
     </main>

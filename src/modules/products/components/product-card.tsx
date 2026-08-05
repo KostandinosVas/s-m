@@ -1,28 +1,27 @@
-import type { Product } from "@/infrastructure/db/schema/products";
-import { formatPrice } from "@/lib/format";
+import Link from "next/link";
+
+import type { ProductDto } from "../dto/product-dto";
 
 type ProductCardProps = {
-  product: Product;
+  product: ProductDto;
 };
 
 export function ProductCard({ product }: ProductCardProps) {
-  const isOutOfStock = product.stockQuantity === 0;
-
   return (
     <li className="rounded border p-4">
-      <h2 className="font-medium">{product.name}</h2>
+      <Link href={`/products/${product.slug}`} className="block">
+        <h2 className="font-medium hover:underline">{product.name}</h2>
 
-      {product.description !== null && (
-        <p className="text-sm text-gray-600">{product.description}</p>
-      )}
+        {product.description !== null && (
+          <p className="text-sm text-gray-600">{product.description}</p>
+        )}
 
-      <p className="mt-2">
-        {formatPrice(product.priceCents, product.currency)}
-      </p>
+        <p className="mt-2">{product.price.formatted}</p>
 
-      {isOutOfStock && (
-        <p className="mt-1 text-sm text-red-600">Out of stock</p>
-      )}
+        {!product.isAvailable && (
+          <p className="mt-1 text-sm text-red-600">Out of stock</p>
+        )}
+      </Link>
     </li>
   );
 }
