@@ -9,11 +9,13 @@ type ProductPageProps = {
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const result = await getProductBySlug(slug);
 
-  if (product === undefined) {
+  if (!result.ok) {
     notFound();
   }
+
+  const product = result.value;
 
   return (
     <main className="mx-auto max-w-2xl p-8">
@@ -27,7 +29,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <p className="mt-3 text-gray-600">{product.description}</p>
       )}
 
-      <p className="mt-6 text-2xl">{product.price.formatted}</p>
+      <p className="mt-6 text-2xl">{product.priceFormatted}</p>
 
       <p className="mt-2 text-sm text-gray-500">
         {product.isAvailable ? "In stock" : "Out of stock"}

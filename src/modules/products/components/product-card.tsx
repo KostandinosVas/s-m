@@ -16,7 +16,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <p className="text-sm text-gray-600">{product.description}</p>
         )}
 
-        <p className="mt-2">{product.price.formatted}</p>
+        <p className="mt-2">{product.priceFormatted}</p>
 
         {!product.isAvailable && (
           <p className="mt-1 text-sm text-red-600">Out of stock</p>

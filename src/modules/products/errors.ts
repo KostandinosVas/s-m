@@ -1,0 +1,1 @@
+export type ProductError = "not-found" | "inactive";
