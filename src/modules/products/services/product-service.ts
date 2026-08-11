@@ -1,14 +1,23 @@
 import {
   findAllActiveProducts,
   findProductBySlug,
+  searchActiveProducts,
 } from "@/infrastructure/repositories/product-repository";
 import { err, ok, type Result } from "@/core/result/result";
 
 import { toProductDto, type ProductDto } from "../dto/product-dto";
 import type { ProductError } from "../errors";
 
-export async function getAvailableProducts(): Promise<ProductDto[]> {
-  const products = await findAllActiveProducts();
+export async function getAvailableProducts(
+  searchTerm?: string,
+): Promise<ProductDto[]> {
+  const term = searchTerm?.trim() ?? "";
+
+  const products =
+    term.length === 0
+      ? await findAllActiveProducts()
+      : await searchActiveProducts(term);
+
   return products.map(toProductDto);
 }
 
