@@ -1,17 +1,43 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 type ProductSearchProps = {
   defaultValue?: string | undefined;
 };
 
 export function ProductSearch({ defaultValue }: ProductSearchProps) {
+  const router = useRouter();
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const term = String(formData.get("search") ?? "").trim();
+
+    router.push(term.length === 0 ? "/products" : `/products?search=${encodeURIComponent(term)}`);
+  }
+
   return (
-    <form action="/products" className="mb-6 flex gap-2">
-      <input
-        type="search"
-        name="search"
-        defaultValue={defaultValue}
-        placeholder="Search products..."
-        className="flex-1 rounded border px-3 py-2"
-      />
+    <form
+      action="/products"
+      onSubmit={handleSubmit}
+      className="mb-6 flex items-end gap-2"
+    >
+      <div className="flex-1">
+        <label htmlFor="product-search" className="mb-1 block text-sm">
+          Search
+        </label>
+        <input
+          id="product-search"
+          type="search"
+          name="search"
+          defaultValue={defaultValue}
+          placeholder="e.g. milk"
+          className="w-full rounded border px-3 py-2"
+        />
+      </div>
+
       <button
         type="submit"
         className="rounded bg-black px-5 py-2 text-white hover:bg-gray-800"

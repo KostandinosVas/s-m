@@ -1,6 +1,8 @@
-import { ProductCard } from "@/modules/products/components/product-card";
+import { Suspense } from "react";
+
+import { ProductList } from "@/modules/products/components/product-list";
+import { ProductListSkeleton } from "@/modules/products/components/product-list-skeleton";
 import { ProductSearch } from "@/modules/products/components/product-search";
-import { getAvailableProducts } from "@/modules/products/services/product-service";
 
 type ProductsPageProps = {
   searchParams: Promise<{ search?: string }>;
@@ -10,7 +12,6 @@ export default async function ProductsPage({
   searchParams,
 }: ProductsPageProps) {
   const { search } = await searchParams;
-  const products = await getAvailableProducts(search);
 
   return (
     <main className="mx-auto max-w-4xl p-8">
@@ -18,18 +19,9 @@ export default async function ProductsPage({
 
       <ProductSearch defaultValue={search} />
 
-      {products.length === 0 ? (
-        <p className="text-gray-600">
-          No products found
-          {search !== undefined && ` for "${search}"`}.
-        </p>
-      ) : (
-        <ul className="space-y-3">
-          {products.map((product) => (
-            <ProductCard key={product.slug} product={product} />
-          ))}
-        </ul>
-      )}
+      <Suspense key={search} fallback={<ProductListSkeleton />}>
+        <ProductList search={search} />
+      </Suspense>
     </main>
   );
 }
