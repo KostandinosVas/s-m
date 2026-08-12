@@ -23,7 +23,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
         ← Back to products
       </Link>
 
-      <h1 className="mt-4 text-3xl font-semibold">{product.name}</h1>
+      <p className="mt-4 text-sm uppercase tracking-wide text-gray-500">
+        {product.category.name}
+      </p>
+
+      <h1 className="mt-1 text-3xl font-semibold">{product.name}</h1>
 
       {product.description !== null && (
         <p className="mt-3 text-gray-600">{product.description}</p>

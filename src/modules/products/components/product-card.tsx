@@ -10,7 +10,11 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <li className="rounded border p-4">
       <Link href={`/products/${product.slug}`} className="block">
-        <h2 className="font-medium hover:underline">{product.name}</h2>
+        <p className="text-xs uppercase tracking-wide text-gray-500">
+          {product.category.name}
+        </p>
+
+        <h2 className="mt-1 font-medium hover:underline">{product.name}</h2>
 
         {product.description !== null && (
           <p className="text-sm text-gray-600">{product.description}</p>

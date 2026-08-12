@@ -1,5 +1,5 @@
 import { formatMoney, money, parseCurrency, type Money } from "@/core/money/money";
-import type { Product } from "@/infrastructure/db/schema/products";
+import type { ProductWithCategory } from "@/infrastructure/repositories/product-repository";
 
 export type ProductDto = {
   slug: string;
@@ -8,10 +8,14 @@ export type ProductDto = {
   price: Money;
   priceFormatted: string;
   isAvailable: boolean;
+  category: {
+    slug: string;
+    name: string;
+  };
 };
 
-export function toProductDto(product: Product): ProductDto {
-const price = money(product.priceCents, parseCurrency(product.currency));
+export function toProductDto(product: ProductWithCategory): ProductDto {
+  const price = money(product.priceCents, parseCurrency(product.currency));
 
   return {
     slug: product.slug,
@@ -20,5 +24,9 @@ const price = money(product.priceCents, parseCurrency(product.currency));
     price,
     priceFormatted: formatMoney(price),
     isAvailable: product.stockQuantity > 0,
+    category: {
+      slug: product.category.slug,
+      name: product.category.name,
+    },
   };
 }
