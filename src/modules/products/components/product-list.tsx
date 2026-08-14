@@ -1,19 +1,19 @@
-import { getAvailableProducts } from "../services/product-service";
+import { getAvailableProducts, type ProductQuery } from "../services/product-service";
 
 import { ProductCard } from "./product-card";
 
 type ProductListProps = {
-  search?: string | undefined;
+  query: ProductQuery;
 };
 
-export async function ProductList({ search }: ProductListProps) {
-  const products = await getAvailableProducts(search);
+export async function ProductList({ query }: ProductListProps) {
+  const products = await getAvailableProducts(query);
 
   if (products.length === 0) {
     return (
       <p className="text-gray-600">
         No products found
-        {search !== undefined && ` for "${search}"`}.
+        {query.search !== undefined && ` for "${query.search}"`}.
       </p>
     );
   }

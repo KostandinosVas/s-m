@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type ProductSearchProps = {
   defaultValue?: string | undefined;
@@ -8,6 +8,7 @@ type ProductSearchProps = {
 
 export function ProductSearch({ defaultValue }: ProductSearchProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -15,7 +16,16 @@ export function ProductSearch({ defaultValue }: ProductSearchProps) {
     const formData = new FormData(event.currentTarget);
     const term = String(formData.get("search") ?? "").trim();
 
-    router.push(term.length === 0 ? "/products" : `/products?search=${encodeURIComponent(term)}`);
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (term.length === 0) {
+      params.delete("search");
+    } else {
+      params.set("search", term);
+    }
+
+    const query = params.toString();
+    router.push(query.length === 0 ? "/products" : `/products?${query}`);
   }
 
   return (

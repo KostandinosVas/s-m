@@ -1,4 +1,4 @@
-import { and, eq, ilike } from "drizzle-orm";
+import { and, asc, eq, ilike, type SQL } from "drizzle-orm";
 
 import { db } from "@/infrastructure/db";
 import { categories } from "@/infrastructure/db/schema/categories";
@@ -34,22 +34,30 @@ const productColumns = {
   },
 };
 
-export async function findAllActiveProducts(): Promise<ProductWithCategory[]> {
-  return db
-    .select(productColumns)
-    .from(products)
-    .innerJoin(categories, eq(products.categoryId, categories.id))
-    .where(eq(products.isActive, true));
-}
+export type ProductFilters = {
+  search?: string | undefined;
+  categorySlug?: string | undefined;
+};
 
-export async function searchActiveProducts(
-  term: string,
+export async function findProducts(
+  filters: ProductFilters,
 ): Promise<ProductWithCategory[]> {
+  const conditions: SQL[] = [eq(products.isActive, true)];
+
+  if (filters.search !== undefined) {
+    conditions.push(ilike(products.name, `%${filters.search}%`));
+  }
+
+  if (filters.categorySlug !== undefined) {
+    conditions.push(eq(categories.slug, filters.categorySlug));
+  }
+
   return db
     .select(productColumns)
     .from(products)
     .innerJoin(categories, eq(products.categoryId, categories.id))
-    .where(and(eq(products.isActive, true), ilike(products.name, `%${term}%`)));
+    .where(and(...conditions))
+    .orderBy(asc(products.name));
 }
 
 export async function findProductBySlug(
