@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { buildProductsHref } from "../lib/build-products-href";
 
 type ProductSearchProps = {
   defaultValue?: string | undefined;
@@ -10,22 +11,19 @@ export function ProductSearch({ defaultValue }: ProductSearchProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
     const term = String(formData.get("search") ?? "").trim();
+    const category = searchParams.get("category") ?? undefined;
 
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (term.length === 0) {
-      params.delete("search");
-    } else {
-      params.set("search", term);
-    }
-
-    const query = params.toString();
-    router.push(query.length === 0 ? "/products" : `/products?${query}`);
+    router.push(
+      buildProductsHref({
+        ...(term.length > 0 ? { search: term } : {}),
+        ...(category !== null && category !== undefined ? { category } : {}),
+      }),
+    );
   }
 
   return (

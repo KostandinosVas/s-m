@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { buildProductsHref } from "../lib/build-products-href";
 import type { CategoryDto } from "../services/product-service";
 
 type CategoryFilterProps = {
@@ -7,24 +8,6 @@ type CategoryFilterProps = {
   activeCategory?: string | undefined;
   search?: string | undefined;
 };
-
-function buildHref(
-  category: string | undefined,
-  search: string | undefined,
-): string {
-  const params = new URLSearchParams();
-
-  if (search !== undefined && search.length > 0) {
-    params.set("search", search);
-  }
-
-  if (category !== undefined) {
-    params.set("category", category);
-  }
-
-  const query = params.toString();
-  return query.length === 0 ? "/products" : `/products?${query}`;
-}
 
 export function CategoryFilter({
   categories,
@@ -38,7 +21,7 @@ export function CategoryFilter({
   return (
     <nav aria-label="Filter by category" className="mb-6 flex flex-wrap gap-2">
       <Link
-        href={buildHref(undefined, search)}
+        href={buildProductsHref({ search })}
         className={`${baseClass} ${activeCategory === undefined ? activeClass : inactiveClass}`}
       >
         All
@@ -47,7 +30,7 @@ export function CategoryFilter({
       {categories.map((category) => (
         <Link
           key={category.slug}
-          href={buildHref(category.slug, search)}
+          href={buildProductsHref({ search, category: category.slug })}
           className={`${baseClass} ${activeCategory === category.slug ? activeClass : inactiveClass}`}
         >
           {category.name}

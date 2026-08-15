@@ -8,6 +8,31 @@ const seedCategories = [
   { slug: "bakery", name: "Bakery" },
 ];
 
+const productNames: Record<string, string[]> = {
+  "fruits-vegetables": [
+    "Red Apples", "Green Apples", "Bananas", "Oranges", "Lemons",
+    "Tomatoes", "Cucumbers", "Carrots", "Potatoes", "Onions",
+    "Spinach", "Broccoli", "Red Peppers", "Zucchini", "Aubergines",
+  ],
+  dairy: [
+    "Fresh Milk 1lt", "Low Fat Milk 1lt", "Greek Yogurt 500gr",
+    "Feta Cheese 400gr", "Gouda Slices 200gr", "Butter 250gr",
+    "Cream Cheese 200gr", "Kefir 500ml", "Halloumi 250gr", "Mozzarella 125gr",
+  ],
+  bakery: [
+    "Wholemeal Bread", "White Bread", "Sourdough Loaf", "Baguette",
+    "Croissants 4pcs", "Sesame Bagels 4pcs", "Pita Bread 6pcs",
+    "Rusks 250gr", "Brioche Buns 4pcs", "Multigrain Rolls 6pcs",
+  ],
+};
+
+function toSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 async function seed(): Promise<void> {
   console.log("Seeding...");
 
@@ -33,42 +58,22 @@ async function seed(): Promise<void> {
     return id;
   }
 
-  await db.insert(products).values([
-    {
-      categoryId: categoryId("fruits-vegetables"),
-      slug: "red-apples",
-      name: "Red Apples",
-      description: "Fresh red apples, class A",
-      priceCents: 249,
-      stockQuantity: 120,
-    },
-    {
-      categoryId: categoryId("dairy"),
-      slug: "fresh-milk-1lt",
-      name: "Fresh Milk 1lt",
-      description: "Whole cow milk, daily delivery",
-      priceCents: 189,
-      stockQuantity: 45,
-    },
-    {
-      categoryId: categoryId("bakery"),
-      slug: "wholemeal-bread",
-      name: "Wholemeal Bread",
-      description: null,
-      priceCents: 165,
-      stockQuantity: 30,
-    },
-    {
-      categoryId: categoryId("dairy"),
-      slug: "feta-cheese-400gr",
-      name: "Feta Cheese 400gr",
-      description: "Traditional PDO feta",
-      priceCents: 549,
-      stockQuantity: 0,
-    },
-  ]);
+  const seedProducts = Object.entries(productNames).flatMap(
+    ([categorySlug, names]) =>
+      names.map((name, index) => ({
+        categoryId: categoryId(categorySlug),
+        slug: toSlug(name),
+        name,
+        description:
+          index % 3 === 0 ? null : `Quality ${name.toLowerCase()}, sourced daily`,
+        priceCents: 99 + index * 37 + (categorySlug.length % 5) * 20,
+        stockQuantity: index % 7 === 0 ? 0 : 10 + index * 3,
+      })),
+  );
 
-  console.log("Done.");
+  await db.insert(products).values(seedProducts);
+
+  console.log(`Inserted ${seedProducts.length} products.`);
   process.exit(0);
 }
 

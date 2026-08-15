@@ -7,14 +7,17 @@ import { ProductSearch } from "@/modules/products/components/product-search";
 import { getCategories } from "@/modules/products/services/product-service";
 
 type ProductsPageProps = {
-  searchParams: Promise<{ search?: string; category?: string }>;
+  searchParams: Promise<{ search?: string; category?: string; page?: string }>;
 };
 
 export default async function ProductsPage({
   searchParams,
 }: ProductsPageProps) {
-  const { search, category } = await searchParams;
+const { search, category, page } = await searchParams;
   const categories = await getCategories();
+
+  const pageNumber = page !== undefined ? Number.parseInt(page, 10) : 1;
+  const currentPage = Number.isNaN(pageNumber) ? 1 : pageNumber;
 
   return (
     <main className="mx-auto max-w-4xl p-8">
@@ -29,10 +32,10 @@ export default async function ProductsPage({
       />
 
       <Suspense
-        key={`${search ?? ""}-${category ?? ""}`}
+        key={`${search ?? ""}-${category ?? ""}-${currentPage}`}
         fallback={<ProductListSkeleton />}
       >
-        <ProductList query={{ search, category }} />
+        <ProductList query={{ search, category, page: currentPage }} />
       </Suspense>
     </main>
   );

@@ -1,4 +1,4 @@
-import { and, asc, eq, ilike, type SQL } from "drizzle-orm";
+import { and, asc, count, eq, ilike, type SQL } from "drizzle-orm";
 
 import { db } from "@/infrastructure/db";
 import { categories } from "@/infrastructure/db/schema/categories";
@@ -19,6 +19,18 @@ export type ProductWithCategory = {
   };
 };
 
+export type ProductFilters = {
+  search?: string | undefined;
+  categorySlug?: string | undefined;
+  limit: number;
+  offset: number;
+};
+
+export type PaginatedProducts = {
+  items: ProductWithCategory[];
+  total: number;
+};
+
 const productColumns = {
   id: products.id,
   slug: products.slug,
@@ -34,14 +46,7 @@ const productColumns = {
   },
 };
 
-export type ProductFilters = {
-  search?: string | undefined;
-  categorySlug?: string | undefined;
-};
-
-export async function findProducts(
-  filters: ProductFilters,
-): Promise<ProductWithCategory[]> {
+function buildConditions(filters: ProductFilters): SQL[] {
   const conditions: SQL[] = [eq(products.isActive, true)];
 
   if (filters.search !== undefined) {
@@ -52,12 +57,35 @@ export async function findProducts(
     conditions.push(eq(categories.slug, filters.categorySlug));
   }
 
-  return db
-    .select(productColumns)
-    .from(products)
-    .innerJoin(categories, eq(products.categoryId, categories.id))
-    .where(and(...conditions))
-    .orderBy(asc(products.name));
+  return conditions;
+}
+
+export async function findProducts(
+  filters: ProductFilters,
+): Promise<PaginatedProducts> {
+  const conditions = buildConditions(filters);
+
+  const [items, totalResult] = await Promise.all([
+    db
+      .select(productColumns)
+      .from(products)
+      .innerJoin(categories, eq(products.categoryId, categories.id))
+      .where(and(...conditions))
+      .orderBy(asc(products.name))
+      .limit(filters.limit)
+      .offset(filters.offset),
+
+    db
+      .select({ value: count() })
+      .from(products)
+      .innerJoin(categories, eq(products.categoryId, categories.id))
+      .where(and(...conditions)),
+  ]);
+
+  return {
+    items,
+    total: totalResult[0]?.value ?? 0,
+  };
 }
 
 export async function findProductBySlug(
