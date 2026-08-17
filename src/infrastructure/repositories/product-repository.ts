@@ -9,6 +9,7 @@ export type ProductWithCategory = {
   slug: string;
   name: string;
   description: string | null;
+  imageUrl: string | null,
   priceCents: number;
   currency: string;
   stockQuantity: number;
@@ -36,6 +37,7 @@ const productColumns = {
   slug: products.slug,
   name: products.name,
   description: products.description,
+  imageUrl: products.imageUrl,
   priceCents: products.priceCents,
   currency: products.currency,
   stockQuantity: products.stockQuantity,

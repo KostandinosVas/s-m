@@ -66,6 +66,10 @@ async function seed(): Promise<void> {
         name,
         description:
           index % 3 === 0 ? null : `Quality ${name.toLowerCase()}, sourced daily`,
+        imageUrl:
+          index % 4 === 0
+            ? null
+            : `https://picsum.photos/seed/${toSlug(name)}/600/600`,
         priceCents: 99 + index * 37 + (categorySlug.length % 5) * 20,
         stockQuantity: index % 7 === 0 ? 0 : 10 + index * 3,
       })),

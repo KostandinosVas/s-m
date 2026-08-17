@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
+import { ProductImage } from "@/modules/products/components/product-image";
 import { getProductBySlug } from "@/modules/products/services/product-service";
 
 type ProductPageProps = {
@@ -22,6 +22,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <Link href="/products" className="text-sm text-gray-500 hover:underline">
         ← Back to products
       </Link>
+
+      <div className="mt-4 max-w-sm">
+        <ProductImage src={product.imageUrl} alt={product.name} priority />
+      </div>
 
       <p className="mt-4 text-sm uppercase tracking-wide text-gray-500">
         {product.category.name}

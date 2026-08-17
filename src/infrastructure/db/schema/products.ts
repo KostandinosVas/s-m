@@ -19,6 +19,7 @@ export const products = pgTable("products", {
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
+  imageUrl: varchar("image_url", { length: 2048 }),
   priceCents: integer("price_cents").notNull(),
   currency: varchar("currency", { length: 3 }).notNull().default("EUR"),
   stockQuantity: integer("stock_quantity").notNull().default(0),

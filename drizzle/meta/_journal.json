@@ -15,6 +15,13 @@
       "when": 1786522894752,
       "tag": "0001_daffy_big_bertha",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786956899220,
+      "tag": "0002_yielding_psylocke",
+      "breakpoints": true
     }
   ]
 }

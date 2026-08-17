@@ -25,8 +25,12 @@ export async function ProductList({ query }: ProductListProps) {
       </p>
 
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {page.items.map((product) => (
-          <ProductCard key={product.slug} product={product} />
+        {page.items.map((product, index) => (
+          <ProductCard
+            key={product.slug}
+            product={product}
+            priority={index < 3}
+          />
         ))}
       </ul>
 

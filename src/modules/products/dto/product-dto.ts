@@ -5,6 +5,7 @@ export type ProductDto = {
   slug: string;
   name: string;
   description: string | null;
+  imageUrl: string | null;
   price: Money;
   priceFormatted: string;
   isAvailable: boolean;
@@ -21,6 +22,7 @@ export function toProductDto(product: ProductWithCategory): ProductDto {
     slug: product.slug,
     name: product.name,
     description: product.description,
+    imageUrl: product.imageUrl,
     price,
     priceFormatted: formatMoney(price),
     isAvailable: product.stockQuantity > 0,
